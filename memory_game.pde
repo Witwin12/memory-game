@@ -1,9 +1,7 @@
 // Create by:Witthawin Thitichettrakul
 // ID 6601012610148
-//create mode easy 2*5 normal 4*5 hard 8*5
-//make pair 
-
-// change number to select mode
+// make animation
+// change number to select mode easy cols = 2 rows = 5 normal cols = 4 rows = 5 hard cols = 8 rows = 5
 int cols = 4;
 int rows = 5;
 int[][] myArray;
@@ -15,14 +13,23 @@ int delay = 1000;
 boolean waiting = false;
 
 void setup() {
-  size(400, 400);
+  size(600, 600);
   myArray = new int[cols][rows];
   revealed = new boolean[cols * rows];
   matched = new boolean[cols * rows];
-  
-  // Generate two of each number from 1 to 10
 
-  for (int i = 1; i <= 10; i++) {
+  int n = 1;// set default of n is 1
+  if (cols == 4 & rows == 5){
+  n = 10;
+  };
+  if(cols == 2 & rows == 5){
+  n = 5;  
+  };
+  if(cols == 8 & rows == 5){
+  n = 20;
+  };
+  // Generate two of each number from 1 to 10
+  for (int i = 1; i <= n; i++) {
     numbers.add(i); // First instance of the number
     numbers.add(i); // Second instance of the number
   }
