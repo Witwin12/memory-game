@@ -1,3 +1,6 @@
+// Create by:Witthawin Thitichettrakul
+// ID 6601012610148
+
 int cols = 4;
 int rows = 5;
 int[][] myArray;
