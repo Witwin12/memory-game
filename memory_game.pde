@@ -1,6 +1,9 @@
 // Create by:Witthawin Thitichettrakul
 // ID 6601012610148
+//create mode easy 2*5 normal 4*5 hard 8*5
+//make pair 
 
+// change number to select mode
 int cols = 4;
 int rows = 5;
 int[][] myArray;
@@ -18,6 +21,7 @@ void setup() {
   matched = new boolean[cols * rows];
   
   // Generate two of each number from 1 to 10
+
   for (int i = 1; i <= 10; i++) {
     numbers.add(i); // First instance of the number
     numbers.add(i); // Second instance of the number
@@ -126,3 +130,5 @@ void hideUnmatched() {
   
   selected.clear();
 }
+
+  
