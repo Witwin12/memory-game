@@ -16,6 +16,10 @@ int lastClickTime = 0;
 int player1 = 0;//set score player 1 = 0
 int player2 = 0;//set score plyer 2 = 0
 boolean current_player = true; // true = player1 flase = player 2
+int seconds = 0;
+int mins = 0;
+int hours = 0;
+
 void setup() {
   size(600, 600);
   generateGrid();
@@ -24,13 +28,29 @@ void show_current_player(){
   textAlign(CENTER, CENTER);
   textSize(30);
   fill(0);
-  text("Player1:  " + player1, 100, 445);
-  text("player2:  " + player2, 500, 445);
+  text("Player1:  " + player1, 100, 415);
+  text("player2:  " + player2, 500, 415);
   if(current_player){
-    text("player1's turn", 300, 445);
+    text("player1's turn", 300, 415);
   }else{
-    text("player2's turn", 300, 445);
+    text("player2's turn", 300, 415);
   }
+}
+void ui_timer(){
+  textAlign(CENTER, CENTER);
+  textSize(30);
+  fill(0);
+  text("Time:  " + hours+':' + mins+':' + seconds, 300, 465);
+}
+void timer(){
+  delay(1000);
+  seconds +=1;
+  if (seconds == 60){
+  seconds = 0;
+  mins +=1;
+}else if(mins == 60){
+  mins = 0;
+  hours +=1;}
 }
 void createModeButtons() {
   // Create buttons for easy, normal, hard modes
@@ -89,7 +109,8 @@ void draw() {
   background(220);
   createModeButtons();
   show_current_player();
-  
+  ui_timer();
+  timer();
   float cellWidth = (width) / (float)cols;
   float cellHeight = (height - 200) / (float)rows;  // Reduce grid height to leave space for buttons
   
@@ -135,6 +156,7 @@ void mousePressed() {
       player1 = 0;
       player2 = 0;
       current_player = true;
+      seconds = 0;
     } else if (mouseX > 220 && mouseX < 380) {
       // Normal mode selected
       cols = 4;
@@ -143,6 +165,7 @@ void mousePressed() {
       player1 = 0;
       player2 = 0;
       current_player = true;
+      seconds = 0;
     } else if (mouseX > 420 && mouseX < 580) {
       // Hard mode selected
       cols = 8;
@@ -151,6 +174,7 @@ void mousePressed() {
       player1 = 0;
       player2 = 0;
       current_player = true;
+      seconds = 0;
     }
     return; // Avoid selecting cells when clicking a mode button
   }
