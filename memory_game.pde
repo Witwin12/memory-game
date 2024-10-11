@@ -1,8 +1,9 @@
-// Create by:Witthawin Thitichettrakul
-// ID 6601012610148
-// make animation
-// change number to select mode easy cols = 2 rows = 5 normal cols = 4 rows = 5 hard cols = 8 rows = 5
-int cols = 4;
+// witthawin thitichettrakul 
+//ID: 6601012610148
+//make multiplayer 
+//make hint
+//timer
+int cols = 2;
 int rows = 5;
 int[][] myArray;
 ArrayList<Integer> numbers = new ArrayList<Integer>();
@@ -11,39 +12,74 @@ boolean[] matched;
 ArrayList<int[]> selected = new ArrayList<int[]>();
 int delay = 1000;
 boolean waiting = false;
-
+int lastClickTime = 0;
+int player1 = 0;//set score player 1 = 0
+int player2 = 0;//set score plyer 2 = 0
+boolean current_player = true; // true = player1 flase = player 2
 void setup() {
   size(600, 600);
+  generateGrid();
+}
+void show_current_player(){
+  textAlign(CENTER, CENTER);
+  textSize(30);
+  fill(0);
+  text("Player1:  " + player1, 100, 445);
+  text("player2:  " + player2, 500, 445);
+  if(current_player){
+    text("player1's turn", 300, 445);
+  }else{
+    text("player2's turn", 300, 445);
+  }
+}
+void createModeButtons() {
+  // Create buttons for easy, normal, hard modes
+  textAlign(CENTER, CENTER);
+  textSize(20);
+  fill(255, 100, 100);
+  rect(20, 520, 160, 50); // Easy button
+  fill(255);
+  text("Easy", 100, 545);
+  
+  fill(100, 255, 100);
+  rect(220, 520, 160, 50); // Normal button
+  fill(255);
+  text("Normal", 300, 545);
+  
+  fill(100, 100, 255);
+  rect(420, 520, 160, 50); // Hard button
+  fill(255);
+  text("Hard", 500, 545);
+}
+
+void generateGrid() {
+  numbers.clear(); // Clear the previous numbers
   myArray = new int[cols][rows];
   revealed = new boolean[cols * rows];
   matched = new boolean[cols * rows];
-
-  int n = 1;// set default of n is 1
-  if (cols == 4 & rows == 5){
-  n = 10;
-  };
-  if(cols == 2 & rows == 5){
-  n = 5;  
-  };
-  if(cols == 8 & rows == 5){
-  n = 20;
-  };
-  // Generate two of each number from 1 to 10
-  for (int i = 1; i <= n; i++) {
-    numbers.add(i); // First instance of the number
-    numbers.add(i); // Second instance of the number
+  
+  int n = 1;
+  if (cols == 4 && rows == 5) {
+    n = 10;
+  } else if (cols == 2 && rows == 5) {
+    n = 5;
+  } else if (cols == 8 && rows == 5) {
+    n = 20;
   }
-  
-  // Shuffle the numbers array to randomize the order
+
+  for (int i = 1; i <= n; i++) {
+    numbers.add(i);
+    numbers.add(i);
+  }
+
   java.util.Collections.shuffle(numbers);
-  
-  // Initialize the 2D array with the shuffled numbers
+
   int index = 0;
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
       myArray[i][j] = numbers.get(index);
-      revealed[index] = false; // Initially, no cell is revealed
-      matched[index] = false;  // Initially, no cell is matched
+      revealed[index] = false;
+      matched[index] = false;
       index++;
     }
   }
@@ -51,27 +87,27 @@ void setup() {
 
 void draw() {
   background(220);
-  float cellWidth = width / (float)cols;
-  float cellHeight = height / (float)rows;
+  createModeButtons();
+  show_current_player();
   
-  // Draw the 2D array as a table
+  float cellWidth = (width) / (float)cols;
+  float cellHeight = (height - 200) / (float)rows;  // Reduce grid height to leave space for buttons
+  
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
       float x = i * cellWidth;
       float y = j * cellHeight;
       int index = i * rows + j;
-
-      // If the number is matched, color it green
+      //check if matched change color
       if (matched[index]) {
-        fill(0, 255, 0); // Green for matched
+        fill(0, 255, 0);
       } else {
-        fill(255); // White for unmatched
+        fill(255);
       }
       
-      stroke(0); // Black border
+      stroke(0);
       rect(x, y, cellWidth, cellHeight);
       
-      // If the cell is revealed or matched, show the number
       if (revealed[index] || matched[index]) {
         fill(0);
         textAlign(CENTER, CENTER);
@@ -80,7 +116,6 @@ void draw() {
     }
   }
   
-  // Handle delay after an unmatched pair
   if (waiting && millis() - lastClickTime > delay) {
     hideUnmatched();
     waiting = false;
@@ -88,47 +123,81 @@ void draw() {
 }
 
 void mousePressed() {
-  if (waiting) return; // Don't allow interaction during delay
+  if (waiting) return;
+
+  // Detect mode button clicks
+  if (mouseY > 520 && mouseY < 570) {
+    if (mouseX > 20 && mouseX < 180) {
+      // Easy mode selected
+      cols = 2;
+      rows = 5;
+      generateGrid();
+      player1 = 0;
+      player2 = 0;
+      current_player = true;
+    } else if (mouseX > 220 && mouseX < 380) {
+      // Normal mode selected
+      cols = 4;
+      rows = 5;
+      generateGrid();
+      player1 = 0;
+      player2 = 0;
+      current_player = true;
+    } else if (mouseX > 420 && mouseX < 580) {
+      // Hard mode selected
+      cols = 8;
+      rows = 5;
+      generateGrid();
+      player1 = 0;
+      player2 = 0;
+      current_player = true;
+    }
+    return; // Avoid selecting cells when clicking a mode button
+  }
   
   float cellWidth = width / (float)cols;
-  float cellHeight = height / (float)rows;
-  
-  // Determine which cell was clicked
+  float cellHeight = (height - 200) / (float)rows;
+
   int i = int(mouseX / cellWidth);
   int j = int(mouseY / cellHeight);
   
   if (i < cols && j < rows) {
     int index = i * rows + j;
 
-    // If the cell is not yet matched or revealed, reveal it
     if (!revealed[index] && !matched[index]) {
       revealed[index] = true;
       selected.add(new int[] { i, j, index });
       
-      // If two cells are selected, check if they match
       if (selected.size() == 2) {
         int[] first = selected.get(0);
         int[] second = selected.get(1);
         
         if (myArray[first[0]][first[1]] == myArray[second[0]][second[1]]) {
-          // They match, mark them as matched
           matched[first[2]] = true;
           matched[second[2]] = true;
           selected.clear();
+          if (current_player){
+            player1 +=1;
+            current_player = false;
+          } else {
+            player2 +=1;
+            current_player = true;
+          }
         } else {
-          // They don't match, start delay to hide them
           waiting = true;
           lastClickTime = millis();
+        }
+      if(current_player){
+        current_player = false;
+        } else{
+        current_player = true;
         }
       }
     }
   }
 }
 
-int lastClickTime = 0;
-
 void hideUnmatched() {
-  // Hide the two selected cells
   int[] first = selected.get(0);
   int[] second = selected.get(1);
   
@@ -137,5 +206,3 @@ void hideUnmatched() {
   
   selected.clear();
 }
-
-  
